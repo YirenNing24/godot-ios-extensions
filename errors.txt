@@ -1,0 +1,14 @@
+/Users/paulskie/Documents/godot-ios-extensions/Sources/Passkey/Passkey.swift:67:1: error: non-'@objc' property 'description' does not satisfy requirement of '@objc' protocol 'NSObjectProtocol'
+extension Passkey: ASAuthorizationControllerDelegate {
+^
+/Users/paulskie/Documents/godot-ios-extensions/SwiftGodot/Sources/SwiftGodot/Core/Various.swift:17:16: note: add '@objc' to expose this property to Objective-C
+    public var description: String {
+               ^
+ObjectiveC.NSObjectProtocol:44:9: note: requirement 'description' declared here
+    var description: String { get }
+        ^
+/Users/paulskie/Documents/godot-ios-extensions/Sources/Passkey/Passkey.swift:67:1: error: cannot declare conformance to 'NSObjectProtocol' in Swift; 'Passkey' should inherit 'NSObject' instead
+extension Passkey: ASAuthorizationControllerDelegate {
+^
+/Users/paulskie/Documents/godot-ios-extensions/Sources/Passkey/Passkey.swift:67:1: note: add stubs for conformance
+extension Passkey: ASAuthorizationControllerDelegate {
