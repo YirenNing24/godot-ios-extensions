@@ -1,3 +1,3 @@
 [submodule "SwiftGodot"]
 	path = SwiftGodot
-	url = git@github.com:migueldeicaza/SwiftGodot.git
+	url = https://github.com/migueldeicaza/SwiftGodot.git
