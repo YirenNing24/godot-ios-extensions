@@ -35,6 +35,11 @@ let package = Package(
 			type: .dynamic,
 			targets: ["InAppPurchase"]
 		),
+        .library(
+            name: "Passkey",
+            type: .dynamic,
+            targets: ["Passkey"]
+        ),
 	],
 
 	// MARK: Dependencies
@@ -64,5 +69,10 @@ let package = Package(
 			dependencies: ["SwiftGodot"],
 			swiftSettings: swiftSettings
 		),
+        .target(
+            name: "Passkey",
+            dependencies: ["SwiftGodot"],
+            swiftSettings: swiftSettings
+        )
 	]
 )
