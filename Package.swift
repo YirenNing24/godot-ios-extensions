@@ -21,11 +21,6 @@ let package = Package(
 			targets: ["Bonjour"]
 		),
 		.library(
-			name: "GameCenter",
-			type: .dynamic,
-			targets: ["GameCenter"]
-		),
-		.library(
 			name: "Haptics",
 			type: .dynamic,
 			targets: ["Haptics"]
@@ -51,11 +46,6 @@ let package = Package(
 	targets: [
 		.target(
 			name: "Bonjour",
-			dependencies: ["SwiftGodot"],
-			swiftSettings: swiftSettings
-		),
-		.target(
-			name: "GameCenter",
 			dependencies: ["SwiftGodot"],
 			swiftSettings: swiftSettings
 		),
