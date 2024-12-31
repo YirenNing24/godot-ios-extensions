@@ -1,35 +1,25 @@
-/Users/paulskie/Documents/godot-ios-extensions/Sources/Passkey/Passkey.swift:23:1: error: 'required' initializer 'init(nativeHandle:)' must be provided by subclass of 'RefCounted'
-
-^
-/Users/paulskie/Documents/godot-ios-extensions/.build/plugins/swiftgodot.output/SwiftGodot/CodeGeneratorPlugin/GeneratedSources/generated/RefCounted.swift:33:21: note: 'required' initializer is declared in superclass here
-    public required init(nativeHandle: UnsafeRawPointer) {
-                    ^
-/Users/paulskie/Documents/godot-ios-extensions/Sources/Passkey/Passkey.swift:19:14: error: use the 'required' modifier to override a required initializer
-    override init() {
-    ~~~~~~~~ ^
-    required
-/Users/paulskie/Documents/godot-ios-extensions/.build/plugins/swiftgodot.output/SwiftGodot/CodeGeneratorPlugin/GeneratedSources/generated/RefCounted.swift:28:21: note: overridden required initializer is here
-    public required init () {
-                    ^
-/Users/paulskie/Documents/godot-ios-extensions/Sources/Passkey/Passkey.swift:23:1: error: 'required' initializer 'init(nativeHandle:)' must be provided by subclass of 'RefCounted'
-
-^
-/Users/paulskie/Documents/godot-ios-extensions/.build/plugins/swiftgodot.output/SwiftGodot/CodeGeneratorPlugin/GeneratedSources/generated/RefCounted.swift:33:21: note: 'required' initializer is declared in superclass here
-    public required init(nativeHandle: UnsafeRawPointer) {
-                    ^
-/Users/paulskie/Documents/godot-ios-extensions/Sources/Passkey/Passkey.swift:19:14: error: use the 'required' modifier to override a required initializer
-    override init() {
-    ~~~~~~~~ ^
-    required
-/Users/paulskie/Documents/godot-ios-extensions/.build/plugins/swiftgodot.output/SwiftGodot/CodeGeneratorPlugin/GeneratedSources/generated/RefCounted.swift:28:21: note: overridden required initializer is here
-    public required init () {
-                    ^
-/Users/paulskie/Documents/godot-ios-extensions/Sources/Passkey/Passkey.swift:6:5: error: module 'SwiftGodot' has no member named 'initialize'
-    SwiftGodot.initialize(types: [Passkey.self])
-    ^~~~~~~~~~ ~~~~~~~~~~
-/Users/paulskie/Documents/godot-ios-extensions/Sources/Passkey/Passkey.swift:36:30: error: type 'Passkey' has no member 'sign_in_completed'
-        emit(signal: Passkey.sign_in_completed, responseJson)
-                     ~~~~~~~ ^~~~~~~~~~~~~~~~~
-/Users/paulskie/Documents/godot-ios-extensions/Sources/Passkey/Passkey.swift:40:30: error: type 'Passkey' has no member 'sign_in_error'
-        emit(signal: Passkey.sign_in_error, errorMessage)
-                     ~~~~~~~ ^~~~~~~~~~~~~
+/Users/paulskie/Documents/godot-ios-extensions/Sources/Passkey/NativePasskey.swift:19:55: error: instance method 'decode(_:from:)' requires that 'ASAuthorizationPlatformPublicKeyCredentialDescriptor' conform to 'Decodable'
+            let credentialRequest = try JSONDecoder().decode(ASAuthorizationPlatformPublicKeyCredentialDescriptor.self, from: requestData)
+                                                      ^
+Foundation.JSONDecoder:36:15: note: where 'T' = 'ASAuthorizationPlatformPublicKeyCredentialDescriptor'
+    open func decode<T>(_ type: T.Type, from data: Data) throws -> T where T : Decodable
+              ^
+/Users/paulskie/Documents/godot-ios-extensions/Sources/Passkey/NativePasskey.swift:20:112: error: incorrect argument label in call (have 'descriptor:', expected 'challenge:')
+            let request = ASAuthorizationPlatformPublicKeyCredentialProvider().createCredentialAssertionRequest(descriptor: credentialRequest)
+                                                                                                               ^~~~~~~~~~~
+                                                                                                                challenge
+/Users/paulskie/Documents/godot-ios-extensions/Sources/Passkey/NativePasskey.swift:39:48: error: instance method 'decode(_:from:)' requires that 'ASAuthorizationPlatformPublicKeyCredentialDescriptor' conform to 'Decodable'
+            let descriptor = try JSONDecoder().decode(ASAuthorizationPlatformPublicKeyCredentialDescriptor.self, from: requestData)
+                                               ^
+Foundation.JSONDecoder:36:15: note: where 'T' = 'ASAuthorizationPlatformPublicKeyCredentialDescriptor'
+    open func decode<T>(_ type: T.Type, from data: Data) throws -> T where T : Decodable
+              ^
+/Users/paulskie/Documents/godot-ios-extensions/Sources/Passkey/NativePasskey.swift:40:140: error: extra argument 'descriptor' in call
+            let registrationRequest = ASAuthorizationPlatformPublicKeyCredentialProvider().createCredentialRegistrationRequest(descriptor: descriptor)
+                                                                                                                              ~~~~~~~~~~~~~^~~~~~~~~~~
+/Users/paulskie/Documents/godot-ios-extensions/Sources/Passkey/NativePasskey.swift:40:127: error: missing arguments for parameters 'challenge', 'name', 'userID' in call
+            let registrationRequest = ASAuthorizationPlatformPublicKeyCredentialProvider().createCredentialRegistrationRequest(descriptor: descriptor)
+                                                                                                                              ^
+AuthenticationServices.ASAuthorizationPlatformPublicKeyCredentialProvider:4:15: note: 'createCredentialRegistrationRequest(challenge:name:userID:)' declared here
+    open func createCredentialRegistrationRequest(challenge: Data, name: String, userID: Data) -> ASAuthorizationPlatformPublicKeyCredentialRegistrationRequest
+              ^
