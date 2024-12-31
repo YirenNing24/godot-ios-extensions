@@ -2,8 +2,6 @@ import Foundation
 import AuthenticationServices
 import SwiftGodot
 
-
-
 class NativePasskey: NSObject, ASAuthorizationControllerDelegate, ASAuthorizationControllerPresentationContextProviding {
     weak var delegate: PasskeyDelegate?
 
@@ -16,8 +14,23 @@ class NativePasskey: NSObject, ASAuthorizationControllerDelegate, ASAuthorizatio
         }
 
         do {
-            let credentialRequest = try JSONDecoder().decode(ASAuthorizationPlatformPublicKeyCredentialDescriptor.self, from: requestData)
-            let request = ASAuthorizationPlatformPublicKeyCredentialProvider().createCredentialAssertionRequest(descriptor: credentialRequest)
+            // Decode JSON into a Dictionary or a custom struct (ASAuthorizationPlatformPublicKeyCredentialDescriptor is not Decodable)
+            let json = try JSONSerialization.jsonObject(with: requestData, options: [])
+            guard let credentialRequest = json as? [String: Any] else {
+                delegate?.didEncounterError("Invalid JSON structure")
+                return
+            }
+            
+            // Assuming you have the necessary values (e.g., challenge, name, userID) from the JSON
+            guard let challengeData = credentialRequest["challenge"] as? Data,
+                  let userIDData = credentialRequest["userID"] as? Data,
+                  let name = credentialRequest["name"] as? String else {
+                delegate?.didEncounterError("Missing required fields in JSON")
+                return
+            }
+
+            let provider = ASAuthorizationPlatformPublicKeyCredentialProvider()
+            let request = provider.createCredentialAssertionRequest(challenge: challengeData, name: name, userID: userIDData)
 
             authorizationController = ASAuthorizationController(authorizationRequests: [request])
             authorizationController?.delegate = self
@@ -36,8 +49,23 @@ class NativePasskey: NSObject, ASAuthorizationControllerDelegate, ASAuthorizatio
         }
 
         do {
-            let descriptor = try JSONDecoder().decode(ASAuthorizationPlatformPublicKeyCredentialDescriptor.self, from: requestData)
-            let registrationRequest = ASAuthorizationPlatformPublicKeyCredentialProvider().createCredentialRegistrationRequest(descriptor: descriptor)
+            // Decode JSON into a Dictionary or a custom struct (ASAuthorizationPlatformPublicKeyCredentialDescriptor is not Decodable)
+            let json = try JSONSerialization.jsonObject(with: requestData, options: [])
+            guard let descriptor = json as? [String: Any] else {
+                delegate?.didEncounterError("Invalid JSON structure")
+                return
+            }
+
+            // Assuming you have the necessary values (e.g., challenge, name, userID) from the JSON
+            guard let challengeData = descriptor["challenge"] as? Data,
+                  let userIDData = descriptor["userID"] as? Data,
+                  let name = descriptor["name"] as? String else {
+                delegate?.didEncounterError("Missing required fields in JSON")
+                return
+            }
+
+            let provider = ASAuthorizationPlatformPublicKeyCredentialProvider()
+            let registrationRequest = provider.createCredentialRegistrationRequest(challenge: challengeData, name: name, userID: userIDData)
 
             authorizationController = ASAuthorizationController(authorizationRequests: [registrationRequest])
             authorizationController?.delegate = self
@@ -52,10 +80,7 @@ class NativePasskey: NSObject, ASAuthorizationControllerDelegate, ASAuthorizatio
     // MARK: - ASAuthorizationControllerDelegate
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
         if let credential = authorization.credential as? ASPublicKeyCredential {
-            // rawClientDataJSON is non-optional, no need for optional binding
             let clientData = credential.rawClientDataJSON
-            
-            // Convert Data to String
             if let responseJson = String(data: clientData, encoding: .utf8) {
                 delegate?.didCompleteWithSuccess(responseJson)
             } else {
@@ -65,7 +90,6 @@ class NativePasskey: NSObject, ASAuthorizationControllerDelegate, ASAuthorizatio
             delegate?.didEncounterError("Invalid credential type")
         }
     }
-
 
     func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
         delegate?.didEncounterError(error.localizedDescription)
