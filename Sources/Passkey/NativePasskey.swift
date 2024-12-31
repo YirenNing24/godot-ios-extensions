@@ -51,12 +51,18 @@ class NativePasskey: NSObject, ASAuthorizationControllerDelegate, ASAuthorizatio
 
     // MARK: - ASAuthorizationControllerDelegate
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
-        if let credential = authorization.credential as? ASPublicKeyCredential,
-        let clientData = credential.rawClientDataJSON,
-        let responseJson = String(data: clientData, encoding: .utf8) {
-            delegate?.didCompleteWithSuccess(responseJson)
+        if let credential = authorization.credential as? ASPublicKeyCredential {
+            // rawClientDataJSON is non-optional, no need for optional binding
+            let clientData = credential.rawClientDataJSON
+            
+            // Convert Data to String
+            if let responseJson = String(data: clientData, encoding: .utf8) {
+                delegate?.didCompleteWithSuccess(responseJson)
+            } else {
+                delegate?.didEncounterError("Failed to decode client data into a string")
+            }
         } else {
-            delegate?.didEncounterError("Failed to decode credential data")
+            delegate?.didEncounterError("Invalid credential type")
         }
     }
 
