@@ -16,8 +16,13 @@ class Passkey: RefCounted, PasskeyDelegate {
     #signal("create_passkey_completed", arguments: ["responseJson": String.self])
     #signal("create_passkey_error", arguments: ["errorMessage": String.self])
 
-    override init() {
+    required init() {
         super.init()
+        nativePasskey.delegate = self
+    }
+
+    required init(nativeHandle: UnsafeRawPointer) {
+        super.init(nativeHandle: nativeHandle)
         nativePasskey.delegate = self
     }
 
@@ -40,3 +45,4 @@ class Passkey: RefCounted, PasskeyDelegate {
         emit(signal: Passkey.sign_in_error, errorMessage)
     }
 }
+
