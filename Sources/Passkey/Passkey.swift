@@ -22,7 +22,7 @@ class Passkey: RefCounted, PasskeyDelegate {
     #signal("create_passkey_completed", arguments: ["responseJson": String.self])
     #signal("create_passkey_error", arguments: ["errorMessage": String.self])
 
-    required init() {ƒ
+    required init() {
         super.init()
         nativePasskey.delegate = self
     }
