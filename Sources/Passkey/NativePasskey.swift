@@ -14,25 +14,19 @@ class NativePasskey: NSObject, ASAuthorizationControllerDelegate, ASAuthorizatio
         }
 
         do {
-            // Decode JSON into a Dictionary or a custom struct (ASAuthorizationPlatformPublicKeyCredentialDescriptor is not Decodable)
-            let json = try JSONSerialization.jsonObject(with: requestData, options: [])
-            guard let credentialRequest = json as? [String: Any] else {
-                delegate?.didEncounterError("Invalid JSON structure")
-                return
-            }
-            
-            // Assuming you have the necessary values (e.g., challenge, name, userID) from the JSON
-            guard let challengeData = credentialRequest["challenge"] as? Data,
-                  let userIDData = credentialRequest["userID"] as? Data,
-                  let name = credentialRequest["name"] as? String else {
-                delegate?.didEncounterError("Missing required fields in JSON")
+            // Decode the JSON into a dictionary
+            let json = try JSONSerialization.jsonObject(with: requestData, options: []) as? [String: Any]
+            guard let challengeBase64 = json?["challenge"] as? String,
+                  let challengeData = Data(base64Encoded: challengeBase64) else {
+                delegate?.didEncounterError("Invalid or missing challenge in JSON")
                 return
             }
 
-            let provider = ASAuthorizationPlatformPublicKeyCredentialProvider()
-            let request = provider.createCredentialAssertionRequest(challenge: challengeData, name: name, userID: userIDData)
+            // Use the challenge to create the credential assertion request
+            let provider = ASAuthorizationPlatformPublicKeyCredentialProvider(relyingPartyIdentifier: "your.relying.party.identifier")
+            let assertionRequest = provider.createCredentialAssertionRequest(challenge: challengeData)
 
-            authorizationController = ASAuthorizationController(authorizationRequests: [request])
+            authorizationController = ASAuthorizationController(authorizationRequests: [assertionRequest])
             authorizationController?.delegate = self
             authorizationController?.presentationContextProvider = self
             authorizationController?.performRequests()
@@ -49,23 +43,20 @@ class NativePasskey: NSObject, ASAuthorizationControllerDelegate, ASAuthorizatio
         }
 
         do {
-            // Decode JSON into a Dictionary or a custom struct (ASAuthorizationPlatformPublicKeyCredentialDescriptor is not Decodable)
-            let json = try JSONSerialization.jsonObject(with: requestData, options: [])
-            guard let descriptor = json as? [String: Any] else {
-                delegate?.didEncounterError("Invalid JSON structure")
+            // Decode the JSON into a dictionary
+            let json = try JSONSerialization.jsonObject(with: requestData, options: []) as? [String: Any]
+            guard let challengeBase64 = json?["challenge"] as? String,
+                  let challengeData = Data(base64Encoded: challengeBase64),
+                  let userIDBase64 = json?["userID"] as? String,
+                  let userIDData = Data(base64Encoded: userIDBase64),
+                  let userName = json?["name"] as? String else {
+                delegate?.didEncounterError("Invalid or missing fields in JSON")
                 return
             }
 
-            // Assuming you have the necessary values (e.g., challenge, name, userID) from the JSON
-            guard let challengeData = descriptor["challenge"] as? Data,
-                  let userIDData = descriptor["userID"] as? Data,
-                  let name = descriptor["name"] as? String else {
-                delegate?.didEncounterError("Missing required fields in JSON")
-                return
-            }
-
-            let provider = ASAuthorizationPlatformPublicKeyCredentialProvider()
-            let registrationRequest = provider.createCredentialRegistrationRequest(challenge: challengeData, name: name, userID: userIDData)
+            // Use the parsed data to create the credential registration request
+            let provider = ASAuthorizationPlatformPublicKeyCredentialProvider(relyingPartyIdentifier: "your.relying.party.identifier")
+            let registrationRequest = provider.createCredentialRegistrationRequest(challenge: challengeData, name: userName, userID: userIDData)
 
             authorizationController = ASAuthorizationController(authorizationRequests: [registrationRequest])
             authorizationController?.delegate = self
