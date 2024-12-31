@@ -1,10 +1,11 @@
 import SwiftGodot
 import AuthenticationServices
 
-#initSwiftExtension(
-    cdecl: "swift_entry_point",
-    types: [Passkey.self]
-)
+// Initialize the Swift extension for Godot
+@_cdecl("swift_entry_point")
+func initSwiftExtension() {
+    SwiftGodot.initialize(types: [Passkey.self])
+}
 
 @Godot
 class Passkey: RefCounted {
@@ -24,16 +25,13 @@ class Passkey: RefCounted {
         }
 
         do {
-            // Decode the JSON to construct the required descriptor
             let credentialRequest = try JSONDecoder().decode(ASAuthorizationPlatformPublicKeyCredentialDescriptor.self, from: requestData)
-            
             let request = ASAuthorizationPlatformPublicKeyCredentialProvider().createCredentialAssertionRequest(descriptor: credentialRequest)
 
             self.authorizationController = ASAuthorizationController(authorizationRequests: [request])
             self.authorizationController?.delegate = self
             self.authorizationController?.presentationContextProvider = self
             self.authorizationController?.performRequests()
-
         } catch {
             emit(signal: Passkey.sign_in_error, "Failed to parse request JSON: \(error.localizedDescription)")
         }
@@ -47,16 +45,13 @@ class Passkey: RefCounted {
         }
 
         do {
-            // Decode the JSON to construct the required descriptor
             let descriptor = try JSONDecoder().decode(ASAuthorizationPlatformPublicKeyCredentialDescriptor.self, from: requestData)
-
             let registrationRequest = ASAuthorizationPlatformPublicKeyCredentialProvider().createCredentialRegistrationRequest(descriptor: descriptor)
 
             self.authorizationController = ASAuthorizationController(authorizationRequests: [registrationRequest])
             self.authorizationController?.delegate = self
             self.authorizationController?.presentationContextProvider = self
             self.authorizationController?.performRequests()
-
         } catch {
             emit(signal: Passkey.create_passkey_error, "Failed to parse request JSON: \(error.localizedDescription)")
         }
@@ -87,5 +82,12 @@ extension Passkey: ASAuthorizationControllerDelegate {
 extension Passkey: ASAuthorizationControllerPresentationContextProviding {
     func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
         return UIApplication.shared.windows.first { $0.isKeyWindow } ?? ASPresentationAnchor()
+    }
+}
+
+// Add a description property to satisfy NSObjectProtocol
+extension Passkey: CustomStringConvertible {
+    public var description: String {
+        return "Passkey Godot Extension"
     }
 }
