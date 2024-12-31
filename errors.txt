@@ -1,25 +1,17 @@
-/Users/paulskie/Documents/godot-ios-extensions/Sources/Passkey/NativePasskey.swift:19:55: error: instance method 'decode(_:from:)' requires that 'ASAuthorizationPlatformPublicKeyCredentialDescriptor' conform to 'Decodable'
-            let credentialRequest = try JSONDecoder().decode(ASAuthorizationPlatformPublicKeyCredentialDescriptor.self, from: requestData)
-                                                      ^
-Foundation.JSONDecoder:36:15: note: where 'T' = 'ASAuthorizationPlatformPublicKeyCredentialDescriptor'
-    open func decode<T>(_ type: T.Type, from data: Data) throws -> T where T : Decodable
+/Users/paulskie/Documents/godot-ios-extensions/Sources/Passkey/NativePasskey.swift:32:28: error: 'init()' is unavailable
+            let provider = ASAuthorizationPlatformPublicKeyCredentialProvider()
+                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+AuthenticationServices.ASAuthorizationPlatformPublicKeyCredentialProvider:19:24: note: 'init()' has been explicitly marked unavailable here
+    public convenience init()
+                       ^
+/Users/paulskie/Documents/godot-ios-extensions/Sources/Passkey/NativePasskey.swift:33:68: error: extra arguments at positions #2, #3 in call
+            let request = provider.createCredentialAssertionRequest(challenge: challengeData, name: name, userID: userIDData)
+                                                                   ^
+AuthenticationServices.ASAuthorizationPlatformPublicKeyCredentialProvider:12:15: note: 'createCredentialAssertionRequest(challenge:)' declared here
+    open func createCredentialAssertionRequest(challenge: Data) -> ASAuthorizationPlatformPublicKeyCredentialAssertionRequest
               ^
-/Users/paulskie/Documents/godot-ios-extensions/Sources/Passkey/NativePasskey.swift:20:112: error: incorrect argument label in call (have 'descriptor:', expected 'challenge:')
-            let request = ASAuthorizationPlatformPublicKeyCredentialProvider().createCredentialAssertionRequest(descriptor: credentialRequest)
-                                                                                                               ^~~~~~~~~~~
-                                                                                                                challenge
-/Users/paulskie/Documents/godot-ios-extensions/Sources/Passkey/NativePasskey.swift:39:48: error: instance method 'decode(_:from:)' requires that 'ASAuthorizationPlatformPublicKeyCredentialDescriptor' conform to 'Decodable'
-            let descriptor = try JSONDecoder().decode(ASAuthorizationPlatformPublicKeyCredentialDescriptor.self, from: requestData)
-                                               ^
-Foundation.JSONDecoder:36:15: note: where 'T' = 'ASAuthorizationPlatformPublicKeyCredentialDescriptor'
-    open func decode<T>(_ type: T.Type, from data: Data) throws -> T where T : Decodable
-              ^
-/Users/paulskie/Documents/godot-ios-extensions/Sources/Passkey/NativePasskey.swift:40:140: error: extra argument 'descriptor' in call
-            let registrationRequest = ASAuthorizationPlatformPublicKeyCredentialProvider().createCredentialRegistrationRequest(descriptor: descriptor)
-                                                                                                                              ~~~~~~~~~~~~~^~~~~~~~~~~
-/Users/paulskie/Documents/godot-ios-extensions/Sources/Passkey/NativePasskey.swift:40:127: error: missing arguments for parameters 'challenge', 'name', 'userID' in call
-            let registrationRequest = ASAuthorizationPlatformPublicKeyCredentialProvider().createCredentialRegistrationRequest(descriptor: descriptor)
-                                                                                                                              ^
-AuthenticationServices.ASAuthorizationPlatformPublicKeyCredentialProvider:4:15: note: 'createCredentialRegistrationRequest(challenge:name:userID:)' declared here
-    open func createCredentialRegistrationRequest(challenge: Data, name: String, userID: Data) -> ASAuthorizationPlatformPublicKeyCredentialRegistrationRequest
-              ^
+/Users/paulskie/Documents/godot-ios-extensions/Sources/Passkey/NativePasskey.swift:67:28: error: 'init()' is unavailable
+            let provider = ASAuthorizationPlatformPublicKeyCredentialProvider()
+                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+AuthenticationServices.ASAuthorizationPlatformPublicKeyCredentialProvider:19:24: note: 'init()' has been explicitly marked unavailable here
+    public convenience init()
