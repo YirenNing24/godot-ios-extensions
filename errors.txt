@@ -3,28 +3,17 @@ Building libraries...
 Building iOS libraries (debug)...
 AVPIdentity: AppleVirtualPlatformHostKey.mm:234: Assert: platformExpert,  value: 0
 AVPIdentity: AppleVirtualPlatformHostKey.mm:234: Failed to get AppleVirtualPlatformARMPE service.
-/Users/paulskie/Documents/godot-ios-extensions/Sources/Passkey/Passkey.swift:68:18: error: overriding non-open property outside of its defining module
-    override var description: String {
-                 ^
-/Users/paulskie/Documents/godot-ios-extensions/Sources/Passkey/Passkey.swift:68:18: error: non-@objc property 'description' is declared in extension of 'Object' and cannot be overridden
-    override var description: String {
-                 ^
-/Users/paulskie/Documents/godot-ios-extensions/SwiftGodot/Sources/SwiftGodot/Core/Various.swift:17:16: note: overridden declaration is here
+/Users/paulskie/Documents/godot-ios-extensions/Sources/Passkey/Passkey.swift:93:1: error: non-'@objc' property 'description' does not satisfy requirement of '@objc' protocol 'NSObjectProtocol'
+extension Passkey: ASAuthorizationControllerPresentationContextProviding {
+^
+/Users/paulskie/Documents/godot-ios-extensions/SwiftGodot/Sources/SwiftGodot/Core/Various.swift:17:16: note: add '@objc' to expose this property to Objective-C
     public var description: String {
                ^
-/Users/paulskie/Documents/godot-ios-extensions/Sources/Passkey/Passkey.swift:12:7: error: cannot declare conformance to 'NSObjectProtocol' in Swift; 'Passkey' should inherit 'NSObject' instead
-class Passkey: RefCounted, NSObjectProtocol {
-      ^
-ObjectiveC.NSObjectProtocol:44:9: note: multiple matching properties named 'description' with type 'String'
+ObjectiveC.NSObjectProtocol:44:9: note: requirement 'description' declared here
     var description: String { get }
         ^
-/Users/paulskie/Documents/godot-ios-extensions/Sources/Passkey/Passkey.swift:68:18: note: candidate exactly matches
-    override var description: String {
-                 ^
-/Users/paulskie/Documents/godot-ios-extensions/SwiftGodot/Sources/SwiftGodot/Core/Various.swift:17:16: note: candidate exactly matches
-    public var description: String {
-               ^
-/Users/paulskie/Documents/godot-ios-extensions/Sources/Passkey/Passkey.swift:12:7: note: add stubs for conformance
-class Passkey: RefCounted, NSObjectProtocol {
-
-    eror
+/Users/paulskie/Documents/godot-ios-extensions/Sources/Passkey/Passkey.swift:93:1: error: cannot declare conformance to 'NSObjectProtocol' in Swift; 'Passkey' should inherit 'NSObject' instead
+extension Passkey: ASAuthorizationControllerPresentationContextProviding {
+^
+/Users/paulskie/Documents/godot-ios-extensions/Sources/Passkey/Passkey.swift:93:1: note: add stubs for conformance
+extension Passkey: ASAuthorizationControllerPresentationContextProviding {
