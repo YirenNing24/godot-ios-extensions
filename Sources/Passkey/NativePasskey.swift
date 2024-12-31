@@ -2,6 +2,8 @@ import Foundation
 import AuthenticationServices
 import SwiftGodot
 
+
+
 class NativePasskey: NSObject, ASAuthorizationControllerDelegate, ASAuthorizationControllerPresentationContextProviding {
     weak var delegate: PasskeyDelegate?
 

@@ -16,6 +16,8 @@ class Passkey: RefCounted, PasskeyDelegate {
     // Define signals for Godot to listen to
     #signal("sign_in_error", arguments: ["errorMessage": String.self])
     #signal("sign_in_completed", arguments: ["responseJson": String.self])
+
+    #signal("product_purchased", arguments: ["product_id": String.self])
     
     #signal("create_passkey_completed", arguments: ["responseJson": String.self])
     #signal("create_passkey_error", arguments: ["errorMessage": String.self])
@@ -43,12 +45,12 @@ class Passkey: RefCounted, PasskeyDelegate {
 
     // MARK: - PasskeyDelegate
     func didCompleteWithSuccess(_ responseJson: String) {
-        emit(signal: Passkey.sign_in_completed, responseJson)
+        emit(signal: Passkey.signInCompleted, responseJson)
     }
 
 
     func didEncounterError(_ errorMessage: String) {
-        emit(signal: Passkey.sign_in_error, errorMessage)
+        emit(signal: Passkey.signInError, errorMessage)
     }
 }
 
