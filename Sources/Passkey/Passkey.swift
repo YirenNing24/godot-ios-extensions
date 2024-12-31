@@ -9,7 +9,7 @@ func initSwiftExtension() {
 
 // Define the Passkey class as a Godot extension
 @Godot
-class Passkey: RefCounted, NSObjectProtocol {
+class Passkey: RefCounted {
     private var authorizationController: ASAuthorizationController?
 
     // Define signals for Godot to listen to
@@ -26,13 +26,11 @@ class Passkey: RefCounted, NSObjectProtocol {
         }
 
         do {
-            // Decode the JSON to construct the required descriptor
             let credentialRequest = try JSONDecoder().decode(ASAuthorizationPlatformPublicKeyCredentialDescriptor.self, from: requestData)
-            
             let request = ASAuthorizationPlatformPublicKeyCredentialProvider().createCredentialAssertionRequest(descriptor: credentialRequest)
 
             self.authorizationController = ASAuthorizationController(authorizationRequests: [request])
-            self.authorizationController?.delegate = self
+            self.authorizationController?.delegate = PasskeyAuthorizationDelegate(parent: self)
             self.authorizationController?.presentationContextProvider = self
             self.authorizationController?.performRequests()
 
@@ -49,13 +47,11 @@ class Passkey: RefCounted, NSObjectProtocol {
         }
 
         do {
-            // Decode the JSON to construct the required descriptor
             let descriptor = try JSONDecoder().decode(ASAuthorizationPlatformPublicKeyCredentialDescriptor.self, from: requestData)
-
             let registrationRequest = ASAuthorizationPlatformPublicKeyCredentialProvider().createCredentialRegistrationRequest(descriptor: descriptor)
 
             self.authorizationController = ASAuthorizationController(authorizationRequests: [registrationRequest])
-            self.authorizationController?.delegate = self
+            self.authorizationController?.delegate = PasskeyAuthorizationDelegate(parent: self)
             self.authorizationController?.presentationContextProvider = self
             self.authorizationController?.performRequests()
 
@@ -63,30 +59,33 @@ class Passkey: RefCounted, NSObjectProtocol {
             emit(signal: Passkey.create_passkey_error, "Failed to parse request JSON: \(error.localizedDescription)")
         }
     }
-
-    // NSObjectProtocol requirements
-    override var description: String {
-        return "Passkey: A SwiftGodot extension for passkey authentication"
-    }
 }
 
-// MARK: - ASAuthorizationControllerDelegate
-extension Passkey: ASAuthorizationControllerDelegate {
+// A wrapper delegate class that conforms to NSObjectProtocol
+class PasskeyAuthorizationDelegate: NSObject, ASAuthorizationControllerDelegate {
+    weak var parent: Passkey?
+
+    init(parent: Passkey) {
+        self.parent = parent
+    }
+
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+        guard let parent = parent else { return }
+
         if let credential = authorization.credential as? ASAuthorizationPlatformPublicKeyCredential {
             if let credentialData = credential.rawCredential,
                let responseJson = String(data: credentialData, encoding: .utf8) {
-                emit(signal: Passkey.sign_in_completed, responseJson)
+                parent.emit(signal: Passkey.sign_in_completed, responseJson)
             } else {
-                emit(signal: Passkey.sign_in_error, "Failed to decode credential data")
+                parent.emit(signal: Passkey.sign_in_error, "Failed to decode credential data")
             }
         } else {
-            emit(signal: Passkey.sign_in_error, "Unexpected credential type")
+            parent.emit(signal: Passkey.sign_in_error, "Unexpected credential type")
         }
     }
 
     func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
-        emit(signal: Passkey.sign_in_error, error.localizedDescription)
+        parent?.emit(signal: Passkey.sign_in_error, error.localizedDescription)
     }
 }
 
