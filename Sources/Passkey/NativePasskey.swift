@@ -52,13 +52,14 @@ class NativePasskey: NSObject, ASAuthorizationControllerDelegate, ASAuthorizatio
     // MARK: - ASAuthorizationControllerDelegate
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
         if let credential = authorization.credential as? ASPublicKeyCredential,
-        let credentialData = credential.rawCredential,
-        let responseJson = String(data: credentialData, encoding: .utf8) {
+        let clientData = credential.rawClientDataJSON,
+        let responseJson = String(data: clientData, encoding: .utf8) {
             delegate?.didCompleteWithSuccess(responseJson)
         } else {
             delegate?.didEncounterError("Failed to decode credential data")
         }
     }
+
 
     func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
         delegate?.didEncounterError(error.localizedDescription)
